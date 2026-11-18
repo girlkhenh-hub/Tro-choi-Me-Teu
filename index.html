@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mẹ Tễu - Điền dấu thích hợp</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff0f6,#e5f6ff);text-align:center;color:#49345c}
+main{max-width:600px;margin:25px auto;padding:22px;background:white;border-radius:25px;box-shadow:0 8px 25px #0001}
+h1{color:#e83e8c;font-size:28px}
+h2{font-size:20px}
+.info{display:flex;justify-content:space-between;font-weight:bold;color:#8852ac}
+.problem{display:flex;align-items:center;justify-content:space-around;gap:8px;margin:30px 0}
+.group{width:42%;min-height:125px;background:#f5f8ff;border-radius:18px;padding:12px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:7px;font-size:30px}
+.sign{font-size:32px;color:#e83e8c}
+.choices{display:flex;justify-content:center;gap:14px}
+button{border:0;border-radius:15px;background:#ffadd3;color:#68234b;padding:16px 23px;font-size:28px;font-weight:bold;cursor:pointer}
+button:active{transform:scale(.95)}
+#feedback{font-size:23px;font-weight:bold;min-height:35px;margin:22px 0}
+.next{font-size:18px;background:#9adfca}
+footer{margin-top:20px;color:#bd528b;font-weight:bold}
+</style>
+</head>
+<body>
+<main>
+<h1>🌸 MẸ TỄU 🌸</h1>
+<h2>🔢 Điền dấu thích hợp</h2>
+<p>Bé hãy đếm hình và chọn dấu đúng nhé!</p>
+<div class="info"><span id="question"></span><span id="score"></span></div>
+<div class="problem">
+<div class="group" id="left"></div>
+<div class="sign" id="sign">?</div>
+<div class="group" id="right"></div>
+</div>
+<div class="choices">
+<button onclick="choose('>')">&gt;</button>
+<button onclick="choose('<')">&lt;</button>
+<button onclick="choose('=')">=</button>
+</div>
+<div id="feedback"></div>
+<button class="next" id="next" onclick="advance()" style="display:none">Câu tiếp theo ➜</button>
+<footer>💖 Học vui cùng Mẹ Tễu 💖</footer>
+</main>
+<script>
+let round=0,points=0,a=0,b=0,answered=false;
+const icons=['🍎','🐻','🌸','⭐','🍓','🐰','🦋','🍉'];
+function render(){
+answered=false;
+a=Math.floor(Math.random()*9)+1;
+b=Math.floor(Math.random()*9)+1;
+const icon=icons[Math.floor(Math.random()*icons.length)];
+document.getElementById('left').textContent=icon.repeat(a);
+document.getElementById('right').textContent=icon.repeat(b);
+document.getElementById('sign').textContent='?';
+document.getElementById('feedback').textContent='';
+document.getElementById('next').style.display='none';
+document.getElementById('question').textContent='Câu '+(round+1)+'/10';
+document.getElementById('score').textContent='⭐ '+points+' điểm';
+}
+function choose(s){
+if(answered)return;
+answered=true;
+const correct=a>b?'>':a<b?'<':'=';
+document.getElementById('sign').textContent=s;
+if(s===correct){
+points++;
+document.getElementById('feedback').textContent='🎉 Chính xác! Bé giỏi quá!';
+document.getElementById('feedback').style.color='#169b70';
+}else{
+document.getElementById('feedback').textContent='💗 Chưa đúng! Đáp án là '+correct;
+document.getElementById('feedback').style.color='#d94b76';
+}
+document.getElementById('score').textContent='⭐ '+points+' điểm';
+document.getElementById('next').style.display='inline-block';
+document.getElementById('next').textContent=round===9?'Xem kết quả 🎁':'Câu tiếp theo ➜';
+}
+function advance(){
+round++;
+if(round===10){
+document.querySelector('.problem').style.display='none';
+document.querySelector('.choices').style.display='none';
+document.getElementById('question').textContent='Hoàn thành!';
+document.getElementById('feedback').textContent='🏆 Bé đạt '+points+'/10 điểm!';
+document.getElementById('next').textContent='Chơi lại 🔄';
+document.getElementById('next').onclick=()=>location.reload();
+}else render();
+}
+render();
+</script>
+</body>
+</html>
