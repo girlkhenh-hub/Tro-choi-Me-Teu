@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -87,6 +88,43 @@ document.getElementById('next').onclick=()=>location.reload();
 }else render();
 }
 render();
+function meTeuNoi(noiDung) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const loiNoi = new SpeechSynthesisUtterance(noiDung);
+  loiNoi.lang = 'vi-VN';
+  loiNoi.rate = 0.85;
+  loiNoi.pitch = 1.15;
+  const giong = speechSynthesis.getVoices().find(v =>
+    v.lang.toLowerCase().startsWith('vi') &&
+    /female|woman|linh|an/i.test(v.name)
+  ) || speechSynthesis.getVoices().find(v =>
+    v.lang.toLowerCase().startsWith('vi')
+  );
+  if (giong) loiNoi.voice = giong;
+  speechSynthesis.speak(loiNoi);
+}
+const chonCu = choose;
+choose = function(dau) {
+  const dung = a > b ? '>' : a < b ? '<' : '=';
+  const daTraLoi = answered;
+  chonCu(dau);
+  if (!daTraLoi) {
+    meTeuNoi(dau === dung
+      ? 'Chính xác! Con giỏi quá!'
+      : 'Chưa đúng rồi! Con hãy cố gắng nhé!');
+  }
+};
+const sangCauCu = advance;
+advance = function() {
+  sangCauCu();
+  if (round === 10) {
+    meTeuNoi('Chúc mừng con đã hoàn thành trò chơi Mẹ Tễu!');
+  } else {
+    meTeuNoi('Con hãy đếm số hình ở hai bên và chọn dấu thích hợp nhé!');
+  }
+};
+
 </script>
 </body>
 </html>
