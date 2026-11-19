@@ -2,40 +2,86 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bé săn tìm chữ - Mẹ Tễu - Tự chạy</title>
- <style>
- const w=frame.contentWindow;
- const d=frame.contentDocument;
- if(!d)return;
- let count=0;
- let wait=0;
- timer=setInterval(()=>{
-  const buttons=[...d.querySelectorAll('.choice')];
-  const target=d.getElementById('target')?.textContent;
-  if(!target)return;
-  const correct=buttons.find(b=>
-    b.textContent===target && !b.disabled
-  );
-  if(correct){
-    correct.click();
-    count=0;
-    return;
-  }
-  if(++wait>=2){
-    wait=0;
-    const next=d.getElementById('next');
-    if(next && !next.disabled){
-      if(d.getElementById('progress')?.textContent.includes('29 / 29')){
-        d.getElementById('restart')?.click();
-      }else{
-        next.click();
-      }
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>Bé săn tìm chữ - Mẹ Tễu - Tự chạy</title>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
     }
-  }
- },1800);
-});
-</script>
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <iframe id="game" src="./index.html"
+          title="Bé săn tìm chữ"></iframe>
+
+  <script>
+    const frame = document.getElementById("game");
+    let timer = null;
+
+    frame.addEventListener("load", function () {
+      if (timer !== null) {
+        clearInterval(timer);
+      }
+
+      const doc = frame.contentDocument;
+      if (!doc) return;
+
+      let waiting = 0;
+
+      timer = setInterval(function () {
+        const target =
+          doc.getElementById("target")?.textContent;
+
+        const buttons = Array.from(
+          doc.querySelectorAll(".choice")
+        );
+
+        if (!target || buttons.length === 0) return;
+
+        const correct = buttons.find(function (button) {
+          return button.textContent.trim() ===
+            target.trim() && !button.disabled;
+        });
+
+        if (correct) {
+          correct.click();
+          waiting = 0;
+          return;
+        }
+
+        waiting++;
+
+        if (waiting >= 2) {
+          waiting = 0;
+
+          const next = doc.getElementById("next");
+          const progress =
+            doc.getElementById("progress")?.textContent || "";
+
+          if (next && !next.disabled) {
+            if (progress.includes("29 / 29")) {
+              doc.getElementById("restart")?.click();
+            } else {
+              next.click();
+            }
+          }
+        }
+      }, 1800);
+    });
+  </script>
 </body>
 </html>
